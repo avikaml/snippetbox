@@ -2,11 +2,31 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"net/http"
 	"runtime/debug"
 	"time"
+
+	"github.com/go-playground/form/v4" // New import
 )
+
+func (app *application) decodePostForm(r *http.Request, dst any) error {
+	err := r.ParseForm()
+	if err != nil {
+		return err
+	}
+
+	err = app.formDecoder.Decode(dst, r.PostForm)
+	if err != nil{
+		var invalidDecoderError *form.InvalidDecoderError
+		if errors.As(err, &invalidDecoderError){
+			panic(err)
+		}
+		return err
+	}
+	return nil
+}
 
 // Writes an error message and stack trace to the errorLog then send 500 Internal Server Error to user
 func (app *application) serverError(w http.ResponseWriter, err error){
