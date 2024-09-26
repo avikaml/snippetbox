@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"flag"
 	"html/template"
@@ -9,7 +10,7 @@ import (
 	"os"
 
 	"time"
-	"github.com/alexedwards/scs/mysqlstore" // New import
+	"github.com/alexedwards/scs/mysqlstore" 
 	"github.com/alexedwards/scs/v2" 
 
 	"github.com/avikaml/snippetbox/internal/models"
@@ -62,6 +63,8 @@ func main() {
 	sessionManager.Store = mysqlstore.New(db)
 	sessionManager.Lifetime = 12 *time.Hour
 
+	sessionManager.Cookie.Secure = true
+
 
 	app := &application{
 		errorLog: errorLog,
@@ -72,6 +75,10 @@ func main() {
 		sessionManager: sessionManager,
 	}
 
+	tlsConfig := &tls.Config{
+		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
+	}
+
 	// New http.Server struct for the purpose of custom logging
 	// By default, if Go’s HTTP server encounters an error it will log
 	// it using the standard logger. For consistency it’d be better to
@@ -80,11 +87,15 @@ func main() {
 		Addr: *addr,
 		ErrorLog: errorLog,
 		Handler: app.routes(),
+		TLSConfig: tlsConfig,
+		IdleTimeout: time.Minute,
+		ReadTimeout: 5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	// the value returned from flag.String() is a pointer.
 	infoLog.Printf("Starting server on %s", *addr)
-	err = srv.ListenAndServe() // We can call ListenAndServe because it satisfies the interface(?)
+	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	errorLog.Fatal(err)
 }
 
