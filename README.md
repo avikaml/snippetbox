@@ -1,6 +1,6 @@
 # snippetbox
 
- Currently - page 333 - testing chapter
+ Currently - page 342 - 14.2
 
  // Do a proper readme and figure out how to make it fancy! use - readme.so!!
 
