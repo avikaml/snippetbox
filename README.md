@@ -1,6 +1,6 @@
 # snippetbox
 
- Currently - page 266(haven't made the changes in errors.go yet)
+ Currently - page 313
 
  // Do a proper readme and figure out how to make it fancy! use - readme.so!!
 

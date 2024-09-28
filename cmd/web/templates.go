@@ -2,9 +2,11 @@ package main
 
 import (
 	"html/template"
+	"io/fs"
 	"path/filepath"
 	"time"
 	"github.com/avikaml/snippetbox/internal/models"
+	"github.com/avikaml/snippetbox/ui" 
 )
 type templateData struct {
 	CurrentYear int
@@ -28,7 +30,7 @@ var functions = template.FuncMap{
 func newTemplateCache() (map[string]*template.Template, error){
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./ui/html/pages/*.tmpl.html")
+	pages, err := fs.Glob(ui.Files, "html/pages/*.html")
 	if err != nil{
 		return nil, err
 	}
@@ -36,13 +38,19 @@ func newTemplateCache() (map[string]*template.Template, error){
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		//ts, err := template.ParseFiles("./ui/html/base.tmpl.html")
-		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.tmpl.html")
-		if err != nil{
-			return nil, err
+		// ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.tmpl.html")
+		// if err != nil{
+		// 	return nil, err
+		// }
+
+		patterns := []string{
+			"html/base.tmpl.html",
+			"html/partials/*.html",
+			page,
 		}
 
-		ts, err = ts.ParseGlob("./ui/html/partials/*.tmpl.html")
+
+		ts, err := template.New(name).Funcs(functions).ParseFS(ui.Files, patterns...)
 		if err != nil {
 			return nil, err
 		}
@@ -53,10 +61,10 @@ func newTemplateCache() (map[string]*template.Template, error){
 		// }
 
 		// ts, err := template.ParseFiles(files...)
-		ts, err = ts.ParseFiles(page)
-		if err != nil{
-			return nil, err
-		}
+		// ts, err = ts.ParseFiles(page)
+		// if err != nil{
+		// 	return nil, err
+		// }
 		cache[name] = ts
 	}
 	return cache, nil
