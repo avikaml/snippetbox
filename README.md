@@ -1,6 +1,6 @@
 # snippetbox
 
- Currently - page 342 - 14.2
+ Currently - page 347 - 14.3
 
  // Do a proper readme and figure out how to make it fancy! use - readme.so!!
 
