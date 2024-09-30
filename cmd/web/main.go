@@ -29,6 +29,7 @@ type application struct {
 	templateCache map[string]*template.Template
 	formDecoder *form.Decoder
 	sessionManager *scs.SessionManager
+	debug bool 
 }
 
 
@@ -38,6 +39,9 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP network adress")
 
 	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+
+	// command line flag for debug mode 
+	debug := flag.Bool("debug", false, "Enable debug mode")
 
 	// This reads in the command-line flag value and assigns it to  addr
 	flag.Parse()
@@ -75,6 +79,7 @@ func main() {
 		templateCache: templateCache,
 		formDecoder: formDecoder,
 		sessionManager: sessionManager,
+		debug: *debug,
 	}
 
 	tlsConfig := &tls.Config{
