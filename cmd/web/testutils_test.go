@@ -69,6 +69,8 @@ func newTestServer(t *testing.T, h http.Handler) *testServer {
 	return &testServer{ts}
 }
 
+// This makes a GET request to a given url path using the test server client, and returns the
+// response status code, headers and body
 func (ts *testServer) get(t *testing.T, urlPath string) (int, http.Header, string){
 	rs, err := ts.Client().Get(ts.URL + urlPath)
 	if err != nil {
