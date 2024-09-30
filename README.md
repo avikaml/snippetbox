@@ -1,7 +1,7 @@
 # snippetbox
 
   Done base version.
-  Current Exercise - 1, page 393
+  Current Exercise - 2, page 397
 
  // Do a proper readme and figure out how to make it fancy! use - readme.so + gpt
 
