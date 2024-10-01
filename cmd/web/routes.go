@@ -44,6 +44,10 @@ func (app *application) routes() http.Handler {
 	// about
 	router.Handler(http.MethodGet, "/account/view", protected.ThenFunc(app.accountView))
 
+	// password change
+	router.Handler(http.MethodGet, "/account/password/update", protected.ThenFunc(app.accountPasswordUpdate))
+	router.Handler(http.MethodPost, "/account/password/update", protected.ThenFunc(app.accountPasswordUpdatePost))
+
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 
 	return standard.Then(router)
